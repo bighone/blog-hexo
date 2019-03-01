@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Sitemap: http://bighone.com/sitemap.xml
+Sitemap: http://bighone.com/baidusitemap.xml

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="web app," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="bighone" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="前言问题稍微有点low，但是对于咱这刚入前端的小白来说，确实被这问题小难了一波，所以干脆做个记录，顺便分享下。 需求 需求如上图，在手机端要实现这种下拉且联动的组件，而且如果列表比较长可以滚动的话，要求滚动条常亮。 项目框架使用React + Redux + FastClick + Ant Design Mobile，可惜的是移动端没有这种下拉联动的组件，GitHub也没搜到（可能没找到），就干脆">
+<meta name="keywords" content="web app">
+<meta property="og:type" content="article">
+<meta property="og:title" content="H5之移动端如何让滚动条不隐藏">
+<meta property="og:url" content="http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/index.html">
+<meta property="og:site_name" content="bighone">
+<meta property="og:description" content="前言问题稍微有点low，但是对于咱这刚入前端的小白来说，确实被这问题小难了一波，所以干脆做个记录，顺便分享下。 需求 需求如上图，在手机端要实现这种下拉且联动的组件，而且如果列表比较长可以滚动的话，要求滚动条常亮。 项目框架使用React + Redux + FastClick + Ant Design Mobile，可惜的是移动端没有这种下拉联动的组件，GitHub也没搜到（可能没找到），就干脆">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/1.png">
+<meta property="og:updated_time" content="2018-03-27T01:44:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="H5之移动端如何让滚动条不隐藏">
+<meta name="twitter:description" content="前言问题稍微有点low，但是对于咱这刚入前端的小白来说，确实被这问题小难了一波，所以干脆做个记录，顺便分享下。 需求 需求如上图，在手机端要实现这种下拉且联动的组件，而且如果列表比较长可以滚动的话，要求滚动条常亮。 项目框架使用React + Redux + FastClick + Ant Design Mobile，可惜的是移动端没有这种下拉联动的组件，GitHub也没搜到（可能没找到），就干脆">
+<meta name="twitter:image" content="http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/"/>
+
+
+
+
+
+  <title>H5之移动端如何让滚动条不隐藏 | bighone</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ed66213ab37638087bba9fd36755bd9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">bighone</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            目录
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bighone">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="bighone">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">H5之移动端如何让滚动条不隐藏</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-27T09:44:12+08:00">
+                2018-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/移动前端/" itemprop="url" rel="index">
+                    <span itemprop="name">移动前端</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            <!--noindex-->
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/27/H5之移动端如何让滚动条不隐藏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count hc-comment-count" data-xid="2018/03/27/H5之移动端如何让滚动条不隐藏/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+              <!--/noindex-->
+            
+          
+
+          
+          
+             <span id="/2018/03/27/H5之移动端如何让滚动条不隐藏/" class="leancloud_visitors" data-flag-title="H5之移动端如何让滚动条不隐藏">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>问题稍微有点low，但是对于咱这刚入前端的小白来说，确实被这问题小难了一波，所以干脆做个记录，顺便分享下。</p>
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p><img src="/2018/03/27/H5之移动端如何让滚动条不隐藏/1.png" alt=""></p>
+<p>需求如上图，在手机端要实现这种下拉且联动的组件，而且如果列表比较长可以滚动的话，要求<font style="color:#f36533"><strong>滚动条常亮</strong></font>。</p>
+<p>项目框架使用React + Redux + FastClick + <a href="https://mobile.ant.design/index-cn" target="_blank" rel="noopener">Ant Design Mobile</a>，可惜的是移动端没有这种下拉联动的组件，GitHub也没搜到（可能没找到），就干脆自己去造了一个，这样<font style="color:#f36533"><strong>滚动条常亮</strong></font>的需求也更能够受控。</p>
+<h3 id="利用CSS"><a href="#利用CSS" class="headerlink" title="利用CSS"></a>利用CSS</h3><p>看到这样的需求，首先想到的就是利用css来控制滚动条常亮显示。当然也很容易搜索到<a href="http://blog.csdn.net/yzbben/article/details/61198969" target="_blank" rel="noopener">这篇博客</a>，从中找到如下代码放入项目：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 基本css代码</span><br><span class="line">overflow-y: scroll; // 滚动显示</span><br><span class="line">-webkit-overflow-scrolling: touch;  // 滚动回弹</span><br><span class="line"></span><br><span class="line"><span class="comment">/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/</span>  </span><br><span class="line">&amp;<span class="selector-pseudo">::-webkit-scrollbar</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="attribute">width</span>: <span class="number">16px</span>;  </span><br><span class="line">    <span class="attribute">height</span>: <span class="number">16px</span>;  </span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#F5F5F5</span>;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">/*定义滚动条轨道 内阴影+圆角*/</span>  </span><br><span class="line">&amp;<span class="selector-pseudo">::-webkit-scrollbar-track</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">6px</span> <span class="built_in">rgba</span>(0,0,0,0.3);  </span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">10px</span>;  </span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#F5F5F5</span>;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">/*定义滑块 内阴影+圆角*/</span>  </span><br><span class="line">&amp;<span class="selector-pseudo">::-webkit-scrollbar-thumb</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">10px</span>;  </span><br><span class="line">    <span class="attribute">-webkit-box-shadow</span>: inset <span class="number">0</span> <span class="number">0</span> <span class="number">6px</span> <span class="built_in">rgba</span>(0,0,0,.3);  </span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#555</span>;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行，开始在电脑的模拟手机浏览器上面确实成功了，以为OK，问题很容易得到解决，可是放到手机上一看，大失所望，滚动条还是没有显示，没任何效果，咋回事，有点坑啊！只能闷着头皮，各种百度谷歌找原因，终于在<a href="https://stackoverflow.com/questions/11825156/mobile-webkit-scroll-bars" target="_blank" rel="noopener">这里</a>发现了问题所在。</p>
+<blockquote>
+<p>You can’t style the native scrollbar on mobile, and I doubt you ever will be able to, sorry.</p>
+</blockquote>
+<blockquote>
+<p>I can’t say why with any authority, but all phones and OS’s use different browsers and each one will have it’s own implementation of the scroll bar. A lot have taken iOS’s fading scrollbar approach too, which means there isn’t much point styling it anyway.</p>
+</blockquote>
+<blockquote>
+<p>This does limit you to using a custom solution really.</p>
+</blockquote>
+<blockquote>
+<p>the mobile safari do not support div scroll, you can use iscoll framework</p>
+</blockquote>
+<p>原来是手机浏览器不支持scroll，只对PC端浏览器生效，推荐使用<a href="https://github.com/cubiq/iscroll/" target="_blank" rel="noopener">iScroll</a>框架来处理移动端的这种问题。</p>
+<p>很开心，终于找到解决方案了，以为把这框架集成进来就可以了，但熟料这才刚刚开始，<a href="https://github.com/cubiq/iscroll/" target="_blank" rel="noopener">iScroll</a>中的坑比想象的要深的多啊。</p>
+<h3 id="集成iScroll"><a href="#集成iScroll" class="headerlink" title="集成iScroll"></a>集成iScroll</h3><p>到<a href="http://iscrolljs.com/" target="_blank" rel="noopener">这里</a>下载iScroll，最新版本是5.1.2，集成到项目当中，将列表用iScroll包装，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">myScroll = <span class="keyword">new</span> IScroll(<span class="string">'#wrapper'</span>, &#123;</span><br><span class="line">	<span class="comment">// 允许滑轮滚动</span></span><br><span class="line"> 	mouseWheel: <span class="literal">true</span>,  </span><br><span class="line"> 	<span class="comment">// 显示滚动条</span></span><br><span class="line">	scrollbars: <span class="literal">true</span>,</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+<p>运行，滚动条在手机端终于常亮显示了，我是用iPhone浏览器进行测试的，一切正常，没啥问题。换了台Android手机去跑，尼玛，滚动条是显示了，但是列表项<strong>点不了啦，点击事件不响应啦！！！</strong> </p>
+<p>没办法，继续查资料，很容易在<a href="https://stackoverflow.com/questions/17768037/enable-click-events-in-iscroll-on-mobile-browser" target="_blank" rel="noopener">这里</a>发现需要在iScroll的options设置click和tap，开启默认的点击事件，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">myScroll = <span class="keyword">new</span> IScroll(<span class="string">'#wrapper'</span>, &#123;</span><br><span class="line">	<span class="comment">// 允许滑轮滚动</span></span><br><span class="line"> 	mouseWheel: <span class="literal">true</span>,  </span><br><span class="line"> 	<span class="comment">// 显示滚动条</span></span><br><span class="line">	scrollbars: <span class="literal">true</span>,</span><br><span class="line">	click: <span class="literal">true</span>,</span><br><span class="line">	<span class="comment">// 该项目可省略</span></span><br><span class="line">	<span class="comment">// 根据描述，如果不加，&lt;a&gt;标签点击在部分手机浏览器不会生效</span></span><br><span class="line">	tap: <span class="literal">true</span></span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+<p>终于Android手机列表项可以响应点击事件了！！！</p>
+<p>可是还没完，回到iPhone设备上测试，竟然发现iPhone又不能点击列表项了啦，不是点不了，而是需要双击才能有效，这不是玩我么，有这么坑的！</p>
+<p>彻底的受伤害了，突然发现原生APP的手机适配虽然也繁琐，但是比这玩意儿要舒服多了啊！</p>
+<p>不过问题还是要解决，还是得回到google的怀抱。最后还是在iScroll的issue中找到了<a href="https://github.com/cubiq/iscroll/issues/674" target="_blank" rel="noopener">解决方案</a>，手机浏览器全方位适配。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">iScrollClick</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/iPhone|iPad|iPod|Macintosh/i</span>.test(navigator.userAgent)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/Chrome/i</span>.test(navigator.userAgent)) <span class="keyword">return</span> (<span class="regexp">/Android/i</span>.test(navigator.userAgent));</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/Silk/i</span>.test(navigator.userAgent)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/Android/i</span>.test(navigator.userAgent)) &#123;</span><br><span class="line">        <span class="keyword">var</span> s=navigator.userAgent.substr(navigator.userAgent.indexOf(<span class="string">'Android'</span>)+<span class="number">8</span>,<span class="number">3</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">parseFloat</span>(s[<span class="number">0</span>]+s[<span class="number">3</span>]) &lt; <span class="number">44</span> ? <span class="literal">false</span> : <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myScroll = <span class="keyword">new</span> IScroll(<span class="string">'#wrapper'</span>, &#123;</span><br><span class="line"> 	mouseWheel: <span class="literal">true</span>,  </span><br><span class="line">	scrollbars: <span class="literal">true</span>,</span><br><span class="line">	click: iScrollClick(),</span><br><span class="line">	tap: iScrollClick()</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>终于搞定。</p>
+<p>######分析：经过测试，将FastClick关闭后，这里click始终传ture的话，苹果手机的双击问题竟然就没有了。所以猜测当iScroll配合FastClick使用的时候，iOS端其实已经激活了iScroll的click，如果再次设置，就会出现iOS端需要双击的问题，具体内部原理搞不清楚，有时间好好研究下，所以配合FastClick使用的话记得加上iScrollClick函数对click进行判断即可。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>滚动条常亮的问题确实是解决了，但是还是有一些瑕疵，如最上面的需求图，<font style="color: #f36533">少部分安卓手机，如Galaxy S5，Nexus 6P的浏览器点击下拉列表项后，竟然会穿透到底部内容列表Cell的事件上去</font>，估计也是因为FastClick的原因吧，但是这个问题谷歌了很久，都没找到解决方案，如果有人知道的话，不吝赐教，灰常感谢。</p>
+<p>既然问题发现了，对我来说是难以忍受的，这里就暂时先用了一个不太理想的方式去处理，代码放出来，应该看得懂，就不解释了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 下拉列表选择城市事件</span></span><br><span class="line">handlerPullCellClick() &#123;</span><br><span class="line">	....</span><br><span class="line">	<span class="built_in">document</span>.prevent = <span class="literal">true</span>;</span><br><span class="line">	setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">	    <span class="built_in">document</span>.prevent = <span class="literal">false</span>;</span><br><span class="line">	&#125;, <span class="number">100</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内容cell点击事件</span></span><br><span class="line">handlerContentCellClick() &#123;</span><br><span class="line">	<span class="comment">// 禁止部分手机出现穿透效果</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">document</span>.prevent) <span class="keyword">return</span>; </span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>这些问题相信很多童鞋都遇到过，如果有更好的解决方案的话，希望可以再评论区告知，让大家一起学习下，感谢。</p>
+<p>另外，如果有童鞋需要这个下拉联动选择器组件代码的话，可到这里下载：<a href="https://github.com/bighone/react-selector" target="_blank" rel="noopener">react-selector</a>。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    <div>
+      
+        
+<br/>
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ END ------</div>
+  
+    <div>   
+      <ul class="post-copyright" style="border-left:3px solid #FF602E;list-style:none;margin:2em 0 0;padding:0.5em 1em;background-color:#f9f9f9">
+        <li class="post-copyright-author">
+          <strong>本文作者：</strong>
+          bighone
+        </li>
+        <li class="post-copyright-link">
+          <strong>本文链接：</strong>
+          <a href="http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/" title="H5之移动端如何让滚动条不隐藏">http://bighone.com/2018/03/27/H5之移动端如何让滚动条不隐藏/</a>
+        </li>
+        <li class="post-copyright-license">
+          <strong>声明： </strong>
+          本博客属个人所有，转载请注明作者及出处。有问题请评论中留言。
+        </li>
+      </ul>
+    </div>
+  
+
+
+      
+    </div>
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/web-app/" rel="tag"># web app</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/15/初篇/" rel="next" title="初篇">
+                <i class="fa fa-chevron-left"></i> 初篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="hypercomments_widget"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="bighone" />
+            
+              <p class="site-author-name" itemprop="name">bighone</p>
+              <p class="site-description motion-element" itemprop="description">God help those who help themselves</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/bighone" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i></a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求"><span class="nav-number">1.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用CSS"><span class="nav-number">1.2.</span> <span class="nav-text">利用CSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集成iScroll"><span class="nav-number">1.3.</span> <span class="nav-text">集成iScroll</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">1.5.</span> <span class="nav-text">后记</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bighone</span>
+
+  
+</div>
+
+
+  <div class="powered-by"> 天道酬勤</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Blog </div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+		<script type="text/javascript">
+		_hcwp = window._hcwp || [];
+
+		_hcwp.push({widget:"Bloggerstream", widget_id: 99816, selector:".hc-comment-count", label: "{\%COUNT%\}" });
+
+		
+		_hcwp.push({widget:"Stream", widget_id: 99816, xid: "2018/03/27/H5之移动端如何让滚动条不隐藏/"});
+		
+
+		(function() {
+		if("HC_LOAD_INIT" in window)return;
+		HC_LOAD_INIT = true;
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage || "en").substr(0, 2).toLowerCase();
+		var hcc = document.createElement("script"); hcc.type = "text/javascript"; hcc.async = true;
+		hcc.src = ("https:" == document.location.protocol ? "https" : "http")+"://w.hypercomments.com/widget/hc/99816/"+lang+"/widget.js";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hcc, s.nextSibling);
+		})();
+		</script>
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("Cw3uzrAlJRu4wvaQHqEuY9Yo-gzGzoHsz", "QDTRFR2t3DEcQQi5J77fM7GR");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
